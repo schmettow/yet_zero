@@ -368,7 +368,7 @@ def read_config(path="Config.csv"):
     CONFIG = dict()
     Tab = pd.read_csv(path)
     for index, row in Tab.iterrows():
-        CONFIG[row[0]] = row[1]
+        CONFIG[row.iloc[0]] = row.iloc[1]
     USB = int(CONFIG["USB"])
     EXP_ID = str(CONFIG["EXP_ID"])
     EXPERIMENTER = str(CONFIG["EXPERIMENTER"])
