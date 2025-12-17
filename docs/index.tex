@@ -1,0 +1,694 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrartcl}
+
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+% Make \paragraph and \subparagraph free-standing
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{241,243,245}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
+\@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
+\definecolor{quarto-callout-color}{HTML}{909090}
+\definecolor{quarto-callout-note-color}{HTML}{0758E5}
+\definecolor{quarto-callout-important-color}{HTML}{CC1914}
+\definecolor{quarto-callout-warning-color}{HTML}{EB9113}
+\definecolor{quarto-callout-tip-color}{HTML}{00A047}
+\definecolor{quarto-callout-caution-color}{HTML}{FC5300}
+\definecolor{quarto-callout-color-frame}{HTML}{acacac}
+\definecolor{quarto-callout-note-color-frame}{HTML}{4582ec}
+\definecolor{quarto-callout-important-color-frame}{HTML}{d9534f}
+\definecolor{quarto-callout-warning-color-frame}{HTML}{f0ad4e}
+\definecolor{quarto-callout-tip-color-frame}{HTML}{02b875}
+\definecolor{quarto-callout-caution-color-frame}{HTML}{fd7e14}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
+\makeatother
+\makeatletter
+\@ifundefined{shadecolor}{\definecolor{shadecolor}{rgb}{.97, .97, .97}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\makeatother
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={The YET manual},
+  pdfauthor={M. Schmettow},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\title{The YET manual}
+\author{M. Schmettow}
+\date{}
+
+\begin{document}
+\maketitle
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, boxrule=0pt, interior hidden, enhanced, borderline west={3pt}{0pt}{shadecolor}, frame hidden, sharp corners]}{\end{tcolorbox}}\fi
+
+\hypertarget{making-yet}{%
+\section{Making YET}\label{making-yet}}
+
+\hypertarget{making-yet0}{%
+\subsection{Making YET0}\label{making-yet0}}
+
+\hypertarget{sec-headrests-and-supports}{%
+\subsection{Headrests and supports}\label{sec-headrests-and-supports}}
+
+\hypertarget{installing-the-software}{%
+\subsection{Installing the software}\label{installing-the-software}}
+
+YET is currently programmed in Python and that makes the installation a
+little harder than you would expect.
+
+The reason for that is that Python is an \emph{interpreted language},
+where the Software written in Python arrives at the users computer as
+\emph{source code} and is run by a Python interpreter. In compiled
+languages, such as C, Java or Rust, the compiler translates the
+human-readable source code into binary code, which can run directly on
+the machine (i.e.~the CPU in your computer). Unfortunately, the Python
+interpreter is a very complex software in its own right. This section
+will guide you through the steps to heave a fully-fledged Python
+environment on your computer, which will be able to run YET and many
+other Python programs.
+
+\hypertarget{getting-yet-from-github}{%
+\subsubsection{Getting YET from Github}\label{getting-yet-from-github}}
+
+The YET code resides in my Github repository
+\href{http://github.com/schmettow/YET}{schmettow/YET}. If you already
+know your way around Github, all you have to do is clone the YET
+repository to your computer.
+
+If you are new to Github, you can download the repository as a zip file
+(\textless\textgreater{} Code -\textgreater{} Download Zip). Make sure
+to really unpack the Zip file, before you work with the YET code. It
+won't work when you just enter the Zip file and try running it from
+there I
+
+n both cases, you will end up with a folder called \texttt{YET} or
+\texttt{YET-main} on your computer. This folder contains all the files
+needed to run YET. For a shortcut: \texttt{yeta/1/yeta\_1.py} is the
+main program.
+
+\hypertarget{beginners-choice-thonny}{%
+\subsubsection{Beginner's choice:
+Thonny}\label{beginners-choice-thonny}}
+
+If you are new to programming, I recommend to start with Thonny, which
+is a beginner-friendly Python editor. It is available for Windows, MacOS
+and Linux. You can download it from \url{https://thonny.org/}. The
+installation is straightforward and Thonny come with its own python
+environment, so you don't have to install anything else.
+
+Except: YET makes use of several Python libraries, which are not
+included in the standard Thonny installation. You have to install them
+manually. To do so, open Thonny and click on the ``Tools'' menu and
+select ``Manage Packages''. In the window that opens, type the name of
+the package into the search field and hit Return. Then click on the
+``Install'' button.
+
+Repeat this for the following packages:
+
+\begin{itemize}
+\tightlist
+\item
+  scikit-learn
+\item
+  pygame
+\item
+  pandas
+\item
+  opencv-camera
+\end{itemize}
+
+You can close the package manager window afterwards.
+
+\hypertarget{advanced-python-users}{%
+\subsubsection{Advanced Python Users}\label{advanced-python-users}}
+
+\hypertarget{testing-your-environment-and-trouble-shooting}{%
+\subsection{Testing your environment and trouble
+shooting}\label{testing-your-environment-and-trouble-shooting}}
+
+YET makes use of several libraries, namely:
+
+\begin{itemize}
+\tightlist
+\item
+  \emph{Pygame} for the graphical interface
+\item
+  \emph{OpenCV} for capturing video streams and eye detection
+\item
+  \emph{Scikit-Learn} for the machine-learning part
+\item
+  \emph{Pandas} for data handling
+\end{itemize}
+
+Scikit-Learn and Pandas are usually easy to install, but OpenCV and
+Pygames sometimes make trouble. Here is what you can do to verify your
+installation.
+
+\hypertarget{testing-the-opencv-installation}{%
+\subsubsection{Testing the OpenCV
+installation}\label{testing-the-opencv-installation}}
+
+Now you can test whether CV was installed correctly, by copy-and-pasting
+the following code into a new Python file and hitting the Run button. If
+the program fails to open the camera, try changing line 3 to
+\texttt{USB\ =\ 0} or \texttt{USB\ =\ 2}, until you see the video
+stream.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ sys}
+\ImportTok{import}\NormalTok{ numpy }\ImportTok{as}\NormalTok{ np}
+\ImportTok{import}\NormalTok{ cv2 }\ImportTok{as}\NormalTok{ cv}
+
+\NormalTok{USB }\OperatorTok{=} \DecValTok{1}
+
+\ControlFlowTok{try}\NormalTok{:}
+\NormalTok{    cam }\OperatorTok{=}\NormalTok{ cv.VideoCapture(USB)}
+\ControlFlowTok{except}\NormalTok{:}
+    \BuiltInTok{print}\NormalTok{(}\StringTok{"Cannot open camera on USB = "} \OperatorTok{+} \BuiltInTok{str}\NormalTok{(USB) }\OperatorTok{+} \StringTok{"Try the values 0, 1, 2"}\NormalTok{)}
+\NormalTok{    sys.exit}
+    
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Q exits the program"}\NormalTok{)}
+    
+\ControlFlowTok{while} \VariableTok{True}\NormalTok{:}
+    \CommentTok{\# Capture frame{-}by{-}frame}
+\NormalTok{    ret, frame }\OperatorTok{=}\NormalTok{ cam.read()}
+    \CommentTok{\# if frame is read correctly ret is True}
+    \ControlFlowTok{if} \KeywordTok{not}\NormalTok{ ret:}
+        \BuiltInTok{print}\NormalTok{(}\StringTok{"Can\textquotesingle{}t receive frame (stream end?). Exiting ..."}\NormalTok{)}
+        \ControlFlowTok{break}
+    \CommentTok{\# Our operations on the frame come here}
+\NormalTok{    gray }\OperatorTok{=}\NormalTok{ cv.cvtColor(frame, cv.COLOR\_BGR2GRAY)}
+    \CommentTok{\# Display the resulting frame}
+\NormalTok{    cv.imshow(}\StringTok{\textquotesingle{}frame\textquotesingle{}}\NormalTok{, gray)}
+    \ControlFlowTok{if}\NormalTok{ cv.waitKey(}\DecValTok{1}\NormalTok{) }\OperatorTok{==} \BuiltInTok{ord}\NormalTok{(}\StringTok{\textquotesingle{}q\textquotesingle{}}\NormalTok{):}
+        \ControlFlowTok{break}
+\CommentTok{\# When everything done, release the capture}
+\NormalTok{cam.release()}
+\NormalTok{cv.destroyAllWindows()}
+\end{Highlighting}
+\end{Shaded}
+
+If CV2 is installed correctly, you should see yourself via your webcam
+or YET. If you still see error messages, that the USB device could not
+be found, this can have several reasons:
+
+\begin{itemize}
+\tightlist
+\item
+  It really only works, when at least one camera is connected via USB.
+  On Notebooks, this usually is teh Webcam (USB0)
+\item
+  The camera device is blocked by another application, such as video
+  chat applications or OSB Studio. Close all other applications that use
+  the webcam and try again.
+\item
+  Since we are using ultra-cheap cameras for YET, maybe you got a bad
+  sample, where the connectors arent't good. Try connecting YET via USB
+  and selecting it as a camera in your favorite video chat app. If that
+  doesn't work either, you probably got a broken sample.
+\end{itemize}
+
+\hypertarget{testing-the-pygame-installation}{%
+\subsubsection{Testing the Pygame
+installation}\label{testing-the-pygame-installation}}
+
+Pygame is used to create the user interface of YET. You can test the
+Pygame installation by pasting the following code into your programming
+editor:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{import}\NormalTok{ sys}
+\ImportTok{import}\NormalTok{ pygame}
+\ImportTok{from}\NormalTok{ pygame.}\BuiltInTok{locals} \ImportTok{import} \OperatorTok{*}
+\ImportTok{from}\NormalTok{ pygame.compat }\ImportTok{import}\NormalTok{ unichr\_, unicode\_}
+
+\CommentTok{\#\#\#\#\# VARIABLES \#\#\#\#\#}
+\CommentTok{\# Colors}
+
+\NormalTok{col\_black }\OperatorTok{=}\NormalTok{ (}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{)}
+\NormalTok{col\_gray }\OperatorTok{=}\NormalTok{ (}\DecValTok{120}\NormalTok{, }\DecValTok{120}\NormalTok{, }\DecValTok{120}\NormalTok{)}
+\NormalTok{col\_white }\OperatorTok{=}\NormalTok{ (}\DecValTok{255}\NormalTok{, }\DecValTok{255}\NormalTok{, }\DecValTok{255}\NormalTok{)}
+
+\NormalTok{WIN\_SIZE }\OperatorTok{=}\NormalTok{ (}\DecValTok{500}\NormalTok{, }\DecValTok{500}\NormalTok{)}
+
+\NormalTok{pygame.init()}
+\NormalTok{pygame.display.set\_mode(WIN\_SIZE)}
+\NormalTok{pygame.display.set\_caption(}\StringTok{"Eye game with Pygame"}\NormalTok{)}
+
+\NormalTok{WINDOW }\OperatorTok{=}\NormalTok{ pygame.display.get\_surface()}
+\NormalTok{WINDOW.fill(col\_white)}
+
+\BuiltInTok{print}\NormalTok{(}\StringTok{"Canvas size is ("} \OperatorTok{+} \BuiltInTok{str}\NormalTok{(WIN\_SIZE[}\DecValTok{0}\NormalTok{]) }\OperatorTok{+} \StringTok{","} \OperatorTok{+} \BuiltInTok{str}\NormalTok{(WIN\_SIZE[}\DecValTok{1}\NormalTok{]) }\OperatorTok{+} \StringTok{")"}\NormalTok{)}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"(0,0) is the upper left corner"}\NormalTok{)}
+\ControlFlowTok{while} \VariableTok{True}\NormalTok{:}
+\NormalTok{    WINDOW.fill(col\_gray)}
+    \ControlFlowTok{for}\NormalTok{ event }\KeywordTok{in}\NormalTok{ pygame.event.get():}
+        \CommentTok{\# IT}
+        \ControlFlowTok{if}\NormalTok{ event.}\BuiltInTok{type} \OperatorTok{==}\NormalTok{ QUIT:}
+\NormalTok{            pygame.quit()}
+            \CommentTok{\# sys.exit()}
+    \CommentTok{\# presentitionals}
+\NormalTok{    pygame.draw.circle(WINDOW, col\_white, (}\DecValTok{250}\NormalTok{, }\DecValTok{250}\NormalTok{), }\DecValTok{200}\NormalTok{)}
+\NormalTok{    pygame.draw.circle(WINDOW, col\_gray, (}\DecValTok{250}\NormalTok{, }\DecValTok{250}\NormalTok{), }\DecValTok{150}\NormalTok{)}
+\NormalTok{    pygame.draw.circle(WINDOW, col\_black, (}\DecValTok{250}\NormalTok{, }\DecValTok{250}\NormalTok{), }\DecValTok{80}\NormalTok{)}
+\NormalTok{    pygame.display.update()}
+\end{Highlighting}
+\end{Shaded}
+
+If you see three circles, your Pygame installation is working
+
+\hypertarget{using-yet}{%
+\section{Using YET}\label{using-yet}}
+
+An eye tracker is a device which records an image of the eyeball and
+uses it to calculate the position of the eyeball. Since digital cameras
+connected to computers are not a big deal, the magic of every eye
+tracker truly lies in how an eyeball picture (eye frame) obtained from
+the camera is converted into two numbers, x and y, to indicate which
+direction the participant is gazing.
+
+Most eye trackers need \emph{training} before they can produce
+coordinates for a particular person. This is often called
+\emph{calibration} and usually involves that the participant is asked to
+look at some targets on the screen. The eye frame is recorded at these
+coordinates and used as a \emph{training sample}. If you think this
+sounds a lot like a machine learning application, you are right. Section
+\textbf{?@sec-quad-bright} will explain how Yet, or more specifically
+the Yeti14 engine, is doing the translation from \emph{eye frames} to
+\emph{coordinates}. It is more simple than you might think.
+
+Yeta1 is a Python program that allows you to run eye tracking
+experiments using pictures in a slide show. It comes with two
+calibration routines. During the \emph{initial training} the user is
+asked to look at nine target dots on the screen, one-by-one. During
+\emph{quick calibration}, the participant is asked to look at a single
+dot at the center of the screen. During the experiment the quick
+calibration is used to frequently (but quickly) correct the translation
+for any movements of the head or the camera. This way, Yet can operate
+accurately over longer periods, without the need of head tracking or
+head support. However, it is still recommended to use a stable head
+mount (e.g.~a headphone, see section ) and a simple head rest, at least.
+
+An eye tracker would be useless if you don't know \emph{what} the user
+sees. Some eye trackers solve this problem by using a second
+head-mounted camera that points in forward direction. Yeta1 solves the
+problem by controlling what the user sees on the screen. With Yeta1 we
+can create experiments by calibrating the eye tracker for a computer
+screen and then showing a sequence pictures on the same screen.
+
+The YET eye tracker system is designed as a a lean machine. You give it
+a bunch of pictures and Yet records the x,y coordinates while the
+participant is viewing them. There are no fancy dashboards or monitors.
+This part of the eye tracking research workflow is left to a data
+analysis tool, which was designed as a dynamic report in R/Quarto. This
+report reads all the recorded data and produces a whole set of useful
+measures, statistics and plots. After all, x,y coordinates are not very
+useful, per se. The dynamic report creates relevant measures, such as
+fixations, dwelling time and distance traveled. In addition, the Yeta1
+dynamic report also supports area-of-interest coding.
+
+The following section runs you through the design of experiment with
+Yet, by example of a real study.
+
+\hypertarget{running-an-experiments-with-yeta1}{%
+\subsection{Running an experiments with
+Yeta1}\label{running-an-experiments-with-yeta1}}
+
+You should have obtained Yeta1 as a package, which contains:
+
+\begin{itemize}
+\item
+  yeta\_1.py: the Python code of Yeta1.
+\item
+  yeta\_1.Rmd: the dynamic report
+\item
+  a directory Stimuli, which contains:
+
+  \begin{itemize}
+  \item
+    a set of picture files
+  \item
+    A Csv table Stimuli.csv, listing and describing the picture files.
+  \end{itemize}
+\item
+  a directory Data, which may contain Csv files. Here, Yeta\_1 will drop
+  the data.
+\item
+  a directory yeti14, which contains additional Python files.
+\end{itemize}
+
+If you want to see how Yeta\_1 works, simply strap on your Yet0, open
+yeta\_1.py in your favorite editor and run it.
+
+\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, colframe=quarto-callout-note-color-frame, rightrule=.15mm, coltitle=black, left=2mm, title=\textcolor{quarto-callout-note-color}{\faInfo}\hspace{0.5em}{The Uncanny Valley}, bottomtitle=1mm, colbacktitle=quarto-callout-note-color!10!white, opacityback=0, toprule=.15mm, breakable, toptitle=1mm, titlerule=0mm, arc=.35mm, bottomrule=.15mm, colback=white, leftrule=.75mm]
+
+The Uncanny Valley is a strange effect observed in human emotional
+responses to faces. While, generally, more human-like faces are
+preferred, faces that are human-like, but yet distinguishable, create
+feelings of erie. The UV22 experiment uses eye tracking to examine
+patterns of visual attention when viewing faces of Great Apes, including
+Homo Sapiens' and their ancestors. Every face comes in two versions:
+with human-like eyes (white sclera) and with ape-like eyes (dark
+sclera). The research question is, whether a mismatch between eyes (ape
+or human) and skull (ape or human) is responsible for the Uncanny Valley
+effect.
+
+\end{tcolorbox}
+
+And here is the quick start for running your own experiment:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Replace the picture files with your own material
+\item
+  Adjust the Stimuli.csv accordingly.
+\item
+  Start yeta\_1.py to run the experiment. Per run, Yeta\_1 will create a
+  new CSV file with a unique name in directory Data.
+\item
+  If you need area-of-interest coding, you have to create your own
+  AOI.csv table.
+\item
+  After running one or multiple runs of the experiment, the collected
+  results can be analyzed using the dynamic report yeta\_1.rmd. For this
+  purpose, open the Rmd file in Rstudio and knit it. The resulting
+  report is designed to be self-explaining.
+\end{enumerate}
+
+\hypertarget{basic-configuration}{%
+\subsubsection{Basic configuration}\label{basic-configuration}}
+
+Yeta1 does not have a user interface for the experimenter. In order to
+configure Yeta1, you will have to open the code (yeta\_1.py) and adjust
+it to your needs. It is not complicated, because you only have to set
+the right values for a few parameters. The following table explains all
+configuration parameters, Yeta1 uses.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{readxl}\SpecialCharTok{::}\FunctionTok{read\_excel}\NormalTok{(}\StringTok{"Manual\_tables.xlsx"}\NormalTok{, }\AttributeTok{sheet =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{table}
+
+\caption{\textbf{?(caption)}}\begin{minipage}[t]{\linewidth}
+
+{\centering 
+
+\begin{verbatim}
+# A tibble: 11 x 2
+   Variable     Explanation                                                     
+   <chr>        <chr>                                                           
+ 1 USB          USB device number. On systems equipped with a webcam, this usua~
+ 2 EXP_ID       Name of your experiment                                         
+ 3 EXPERIMENTER Name or identifier of the experimenter.                         
+ 4 STIM_PATH    Directory where the pictures reside. Default this is to collect~
+ 5 STIM_INFO    Directory where the stimulus description table is stored. Defau~
+ 6 RESULT_DIR   Directory, where results are stored. Default is Data/           
+ 7 PART_ID      Participant identifier. Default is a timestamp.                 
+ 8 RESULT_FILE  File where the results of one run are stored. Defaults to Data/~
+ 9 SCREEN_W     Width of the window                                             
+10 SCREEN_H     Height of the window                                            
+11 SLIDE_TIME   time in seconds between slides                                  
+\end{verbatim}
+
+}
+
+\end{minipage}%
+
+\end{table}
+
+Most of these parameters have default values, that should work well, if
+you leave the directory structure of Yeta\_1 untouched. A parameter that
+you may have to change is
+
+\texttt{USB\ =\ 1}
+
+This denotes that the second USB camera, that is connected to the system
+is used. Why the second? Because most systems already have a webcam
+built-in or external connected, which counts as the first device. If you
+have not yet acquired or made YET0, you can as well use the webcam for a
+first try. But it won't get you very far, which was the initial problem
+that lead to the YET project.
+
+The parameters that you should change are:
+
+EXP\_ID will appear as an identifier for the experiment Yeta\_1 was used
+for. It is used to create the filenames, but also appears in the results
+table. Say, your experiment takes place in 2023 and is about the Stroop
+task, then you could create a experiment identifier by changing the line
+
+\texttt{EXP\_ID\ =\ "UV22"}
+
+to
+
+\texttt{EXP\_ID\ =\ "Strp23"}
+
+EXPERIMENTER will appear as an identifier for the experimenter. This is
+useful, when the data collection is carried out by a team, where every
+member has a different setup (e.g.~screen size). If every experimenter
+sets the parameter to their own, say initials, the data analysis can
+make use of this by controlling for experimenter differences. If your
+name happened to be Zaphot Beeblebrox, then you could set the
+experimenter ID to:
+
+\texttt{EXERIMENTER\ =\ "ZB"}
+
+SCREEN\_SIZE contains two valuzes, which are the width and the height of
+the Yeta\_1 window. Both are measured in pixel and should not exceed the
+real screen height and width. The default of 800 by 800 should work on
+practically all systems, but is not optimal if you have a much better
+resolution. Note that these values should be set to a slightly smaller
+value than the actual screen size, to account for window decorations. If
+your computer has a the screen dimensions 1920 x 1080 (HD), the
+following values should work well:
+
+\texttt{SCREEN\_SIZE\ =\ (1800,\ 1200)}
+
+Finally, the parameter SLIDES\_TIME can be adjusted to increase or
+decrease the presentation time per stimulus in seconds. One reason to
+change this to a longer value if your stimuli contain text to be read,
+for example, when you are evaluating websites. A reason to set it to a
+smaller value is that when developing your experiment you will typically
+do many test runs. By setting the presentation time to half one second,
+this process gets much faster.
+
+\texttt{SLIDE\_TIME\ =\ 0.5}
+
+Up to this point, you have given Yeta\_1 some meta data and adjusted it
+to your screen. If you run Yeta\_1 one more time, it should run the same
+experiment, but with adjusted window title and identifier columns in the
+results files. In the next section I will explain how to set up a new
+set of stimuli for Yet.
+
+\hypertarget{preparing-stimuli}{%
+\subsubsection{Preparing Stimuli}\label{preparing-stimuli}}
+
+When using a spreadsheet program, like Excel, for the job, make sure to
+not make any structural modifications to the table and always save it in
+CSV format.
+
+\hypertarget{working-with-eye-tracking-data}{%
+\subsubsection{Working with eye tracking
+data}\label{working-with-eye-tracking-data}}
+
+\hypertarget{limitations-of-yet0}{%
+\subsection{Limitations of YET0}\label{limitations-of-yet0}}
+
+\begin{itemize}
+\tightlist
+\item
+  strong light, short episodes
+\item
+  lack of head tracking
+\end{itemize}
+
+\hypertarget{understanding-yet}{%
+\section{Understanding YET}\label{understanding-yet}}
+
+\hypertarget{quad-bright}{%
+\subsection{The quad-bright model}\label{quad-bright}}
+
+\hypertarget{using-yet-in-your-own-projects}{%
+\subsection{Using YET in your own
+projects}\label{using-yet-in-your-own-projects}}
+
+
+
+\end{document}
