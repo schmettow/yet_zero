@@ -1,5 +1,5 @@
 ---
-title: "YETA1 Data Analysis"
+title: "YET Zero Eye Tracking Data Analysis"
 author: "M Schmettow"
 date: "05/10/2022"
 output:
@@ -25,41 +25,56 @@ require(ggimg)
 
 ## Input and preparation
 
+Yet Zero produces output in CSV format, containing meta data and measured coordinates. 
+Per session, one CSV file is created.
+During preparation we read in all CSV files, combine them into a single data frame, and add external meta data on stimuli and areas of interest (AOI).
+
+For this process, the following standard files and folders are used:
+
+1. A folder "Data/" containing all CSV files produced by Yet Zero
+1. A folder "Stimuli/" containing all stimulus images
+1. A file "Stimuli/Stimuli.csv" containing meta data on the stimuli
+1. A file "Stimuli/AOI.csv" containing definitions of areas of interest (AOI) on the stimuli
+
+We begin with reading in in th stimulus data and how this can be put into static ggplot figures. 
+This is particularly useful for checking the AOI definitions visually. 
+
 ### Reading Stimulus meta data
 
-```{r}
-read_yeta1_stim <- 
-  function(file = "Stimuli/Stimuli.csv", 
-           stim_dir = "Stimuli/",
-           col_types = cols(File = col_character(),
-                            width = col_double(),
-                            height = col_double())){
-    stimuli <-
-      read_csv(file,
-               col_types = col_types) %>% 
-      mutate(
-      Path = str_c(stim_dir, File, sep = ""),
-      Image = map(Path, ~jpeg::readJPEG(.x))
-      )
-    return(stimuli)    
-  }
+The following function reads in the stimulus meta data from the specified CSV file, and adds the image paths and image data.
+The `col_types = col(...)` argument specifies the expected data types of each column in the CSV file. Always remember that CSV data is of type Character, including the numbers. `read_csv` often guesses the data type correctly, but there exist fringe cases, where this fails.
 
-read_yeta1_stim()
-```
 
 ```{r}
-my_Stim_col_types <- cols(  File = col_character(),
+col_types_Stim <- cols(  File = col_character(),
                             width = col_double(),
                             height = col_double(),
                             hum_like = col_double(),
                             hum_skull = col_logical(),
                             hum_eye = col_logical(),
                             Face = col_character())
+
+
+
+read_stim <- 
+  function(file = "Stimuli/Stimuli.csv", 
+           stim_dir = "Stimuli/",
+           col_types = col_types_Stim
+           ){
+    stimuli <-
+      read_csv(file,
+               col_types = col_types) %>% 
+      mutate(Path = str_c(stim_dir, File, sep = ""))
+    return(stimuli)    
+  }
+
+read_stim()
 ```
 
+Here we use `read_stim` to create the Stimulus table. We do a little recoding, if needed. The file name acts as an *identifier* for the stimuli.
+
 ```{r}
-Stimuli <-
-  read_yeta1_stim(col_types = my_Stim_col_types) %>% 
+Stimuli <- read_stim() %>% 
       mutate(Skull = if_else( hum_skull, "human", "ape"),
              Sclera = if_else( hum_eye, "human", "ape"),
              Stim = File)
@@ -68,20 +83,44 @@ Stimuli <-
 
 ### Making a stimulus grid
 
-We create a re-usable ggplot object G_0 containing a grid of pictures
+A useful way to visualize eye tracking data is to use a grid of the stimuli (like a thumbnail sheet) and overlay the eye tracking data on top of it. This can take different forms, but the underlying grid is always the same. Here we create a re-usable ggplot object G_0 containing a grid of pictures.
 
 ```{r plot_stimuli, fig.height = 8, fig.width = 8}
-G_0 <- Stimuli %>% 
+G_0 <- 
+  Stimuli %>% 
     ggplot(aes(xmin = 0, xmax = width, 
                         ymin = 0, ymax = height)) +
     facet_wrap(~Stim) +
     ggimg::geom_rect_img(aes(img = Path))
+G_0
 ```
 
 ### Reading csv
 
+The following code contains two functions. The first function `read_yz_csv` reads in a single CSV file, removes duplicate rows (which can occur when the eye tracker loses track of the eye).
+The second function `read_yz_files` takes a *list* of file names and reads them, combines them into a single data frame, and adds stimulus meta data from the stimulus table created above. 
+
+** Notes **
+
+The `map_df()` function is a so called *iterator*. Iterators are called *super functions*, where one of the function arguments is a function itself. In R iterators are the default way to do an operation repeatedly over a data set.
+Now you know why tidy R never uses for loops, like in Python. And you know one reason why R is called a *functional programming language*!
+
+
+There is another famous piece of data science at work here. 
+Think about the problem of adding the Stimulus meta data to the eye tracking data. 
+Try to picture how you would do it manually: 
+
+1. Identify matching Stimulus ID in both tables
+2. Copy the meta data from the Stimulus table to the eye tracking data table
+3. Repeat for all rows in the eye tracking data table.
+
+This operation is called a *join* in Data Science. 
+A precondition for joins is that the table have matching identifiers to create the relationship.
+Here this is the `Stim` column.
+
+
 ```{r read_data}
-read_yeta1_csv <- function(file){
+read_yz_csv <- function(file){
   read_csv(file, 
            col_types = cols(Exp = col_character(), Part = col_character(), 
                             Stim = col_character(), time = col_double(), 
@@ -93,10 +132,10 @@ read_yeta1_csv <- function(file){
     select(Exp, Part, Stim, time, x, y, x_pro, y_pro)
 }
 
-read_yeta1_files <- function(files, stim_tab){
+read_yz_data <- function(files, stim_tab){
   Data <- 
     files %>% 
-    map_df(read_yeta1_csv) %>% 
+    map_df(read_yz_csv) %>% 
     mutate(Obs  = row_number()) %>%
     mutate(Part = as.factor(as.integer(Part) - min(as.integer(Part)) + 1)) %>% ## reducing the Part identifier
     group_by(Part) %>%
@@ -104,13 +143,15 @@ read_yeta1_files <- function(files, stim_tab){
     ungroup() %>%
     left_join(stim_tab, by = "Stim") %>% 
     mutate(y = height - y, # translating from origin at top (pygame) to bottom (ggplot)
-           y_pro = 1 - y_pro) %>%
-    select(Exp, Obs, Part, Stim, time, x, y, x_pro, y_pro)
+           y_pro = 1 - y_pro)
   return(Data)
 }
 
 
 ```
+
+Before we can use this function, we have to create a list of all Csv files we want to process.
+The shown default is to read all csv files from directory `Data`. 
 
 ```{r reading_csv}
 csv_files <- dir(path = "Data/",
@@ -118,15 +159,18 @@ csv_files <- dir(path = "Data/",
              recursive = F,
              full.names = T)
 
-UV22_0 <- 
-  read_yeta1_files(csv_files, Stimuli)
-#%>%
-#  mutate(x = x_pro * 450,
-#         y = y_pro * 450)
+D_0 <- read_yz_data(csv_files, Stimuli)
+
+head(D_0)
 
 ```
 
-### Raw data visualization
+# Last Session
+
+Before continue with AOI coding, we take a look at the data of the last participant only. This is useful to check right after an experiment.
+
+Here we also introduce some basic visualizations of raw data, or overlays to the grid of Stimuli. The following function extracts the data of the last participant only.
+
 
 ```{r}
 get_last_part <- function(data){
@@ -139,34 +183,28 @@ get_last_part <- function(data){
 
 ```
 
-```{r heatmap}
+
+Here we extend the stimulus grid G_0 with points of measurement. See how the `geom_point` function takes a `data` argument, which allows us to specify a different data frame than the one used for the base ggplot object G_0 (which is the table of stimuli).
+
+Note that the individual figures are being scaled by the eye tracking measures.
+
+```{r heatmap_last}
 G_0 +
   geom_point(aes(x = x, y = y),
              size = 2,
              col = "red",
              alpha = .2,
-             data = get_last_part(UV22_0),
-             inherit.aes = F) +
-  facet_wrap(~Stim)
+             data = get_last_part(D_0),
+             inherit.aes = F)
 ```
+In some studies, eye tracking data is used on theories that predict a certain sequence, such as: first look at the eyes, then at the mouth, then back to the eyes. The following variation shows the path of the last participant, by connecting the points with lines.
 
-```{r heatmap_part}
-G_0 +
-  geom_point(aes(x = x, y = y,
-                 col = Part), # <--
-             size = 2,
-             data = UV22_0, # <--
-             inherit.aes = F) +
-  facet_wrap(~Stim)
-```
 
-### Last Participant
-
-```{r heatmap_last}
+```{r pathmap_last}
 G_0 +
   geom_point(aes(x = x, y = y,
                  col = Part),
-             data = get_last_part(UV22_0),
+             data = get_last_part(D_0),
              size = .1,
              inherit.aes = F) +
   geom_line(aes(x = x , 
@@ -174,66 +212,78 @@ G_0 +
                 group = Part),
                 col = "red",
              inherit.aes = F,
-            data = get_last_part(UV22_0)) +
+            data = get_last_part(D_0))
+```
+When we joined in the stimulus meta data, we also imported all the meta data this table specifies. The following code compares the eye tracking data for two stimulus conditions: white vs dark scleras.
+
+```{r}
+G_0 +
+  geom_point(aes(x = x, 
+                 y = y,
+                 col = Sclera),
+             size = 2,
+             alpha = .2,
+             data = get_last_part(D_0),
+             inherit.aes = F)
+```
+
+
+Finally, the following plot shows how data from all participants can be visualized, by coloring by participant identifier.
+
+```{r heatmap_all}
+G_0 +
+  geom_point(aes(x = x, y = y,
+                 col = Part), # <--
+             size = 2,
+             data = D_0, # <--
+             inherit.aes = F) +
   facet_wrap(~Stim)
 ```
 
-### Adding Stimulus meta data
-
-```{r}
-UV22_1 <- 
-  UV22_0 %>% 
-  left_join(Stimuli, by = "Stim") %>% 
-  select(Obs, Part, Stim, Face, hum_like, Sclera, Skull, time, x, y)
-
-sample_n(UV22_1, 12)
-```
 
 ## Deriving measures
 
--   measuring travel and duration
+Often, it is relevant to know where someone is looking at, but not always. Here we derive a simple measure, the total distance ther eyes travelled during stimulus presentation.
+
 
 ```{r}
 add_travel <- 
   function(data) 
     mutate(data,  travel = sqrt((x - lag(x))^2 + (y - lag(y))^2))
 
-add_duration <- 
-  function(data) 
-    mutate(data,  duration = lead(time) - time)
-
-
-UV22_2 <- 
-  UV22_1 %>% 
+D_1 <- 
+  D_0 %>% 
   mutate(Sequence = as.factor(str_c(Part, Stim, sep = "_"))) %>% 
   group_by(Sequence) %>% 
-  add_duration() %>% 
   add_travel() %>% 
   ungroup() %>% 
   select(Obs, Part, Stim, Face, Sequence, hum_like, 
-         Sclera, Skull, time, x, y, travel, duration)
+         Sclera, Skull, time, x, y, travel)
 ```
 
-```{r plot_dur_and_travel}
+```{r plot_travel}
 
-UV22_2 %>% 
-  ggplot(aes(x = duration)) +
-  geom_histogram() +
-  facet_wrap(~Stim)
-
-
-UV22_2 %>% 
+D_1 %>% 
   ggplot(aes(x = travel)) +
   geom_histogram() +
   facet_wrap(~Stim)
 ```
 
-### Areas of interest
+# Areas of interest
 
-#### Reading AOI
+The main use case for eye tracking is to measure how often or how long, or in which sequence, people look at certain areas of interest (AOI) on the stimulus. What these areas are differs from case to case, here it is the main areas of faces: eyes, mouth and nose.
+
+AOIs are defined as rectangles on the stimulus images. The following function reads in the AOI definitions from a CSV file, and merges them with the stimulus meta data to create absolute coordinates for each AOI on each stimulus.
+
+
+## Reading AOI
+
+The function defined here makes againn use of a join operation, 
+which merges the stimulus meta data with the AOI rectangle definitions. 
+Different to the previous join, the linking iodentifier is not the Stimulus ID, but the face. This is a difference, as in this experiment, the same face appeared in two conditions regarding the sclera color. This is also the reason why the join is many-to-many.
 
 ```{r}
-read_yeta1_aoi <- 
+read_yz_aoi <- 
   function(file = "Stimuli/AOI.csv",
            stim_dir = "Stimuli/",
            col_types = cols(AOI = col_character(), Face = col_character(), 
@@ -243,7 +293,7 @@ read_yeta1_aoi <-
     
     read_csv(file, col_types = col_types) %>% 
       rename(x_aoi = x, y_aoi = y, w_aoi = w, h_aoi = h) %>% 
-      right_join(stim_tab, by = "Face") %>% 
+      right_join(stim_tab, by = "Face", relationship = "many-to-many") %>% 
       mutate(xmin = x_aoi, 
              xmax = x_aoi + w_aoi,
              ymax = height - y_aoi, ## reversing the y coordinates
@@ -253,13 +303,15 @@ read_yeta1_aoi <-
 
 ```
 
-```{r reading_aoi}
-AOI <- read_yeta1_aoi(stim_tab = Stimuli)
 
+```{r reading_aoi}
+AOI <- read_yz_aoi(stim_tab = Stimuli)
 head(AOI)
 ```
 
-#### AOI preview
+## AOI preview
+
+Like we did before with the stimulus images, we can now create a ggplot object that shows the AOI rectangles on top of the stimulus images. This is very useful for checking if the AOI definitions are correct.
 
 ```{r plot_aoi, fig.height = 8, fig.width = 8}
 G_1 <- 
@@ -279,22 +331,26 @@ G_1
 
 #### AOI Classification
 
+We have the AOI definitions, now we can classify each eye tracking observation according to the AOI it falls into. For this purpose, we do a many-to-many join between the eye tracking data and the AOI definitions, based on the Face identifier. With three AOIs, this creates three data rows from one.
+
+But this is just an intermediate step. Next, we filter only those rows, where the measure falls into the AOI. As long as the AOIs are non-overlapping, there can only be one (or zero) match.   Then we check for each observation if it falls into the rectangle defined by the AOI. If so, we keep that observation-AOI combination. Finally, we right-join this result with the original eye tracking data to keep all observations, and assign "Outside" to those observations that did not fall into any AOI.
+
+
 ```{r}
-UV22_3 <- 
-  UV22_2 %>% 
+D_2 <- 
+  D_0 %>% 
   left_join(AOI, by = "Face", relationship = "many-to-many") %>% 
   mutate(is_in = x > xmin & x < xmax & y > ymin & y < ymax) %>% 
   filter(is_in) %>% 
   select(Obs, AOI) %>% 
-  right_join(UV22_2, by = "Obs") %>% 
+  right_join(D_1, by = "Obs") %>% 
   mutate(AOI = if_else(is.na(AOI), "Outside", AOI)) %>% 
   arrange(Part, time)
 
-summary(UV22_3)
 ```
 
 ```{r}
-UV22_3 %>% 
+D_2 %>% 
   group_by(AOI, Sclera, Skull) %>% 
   summarize(n = n()) %>% 
   ungroup() %>% 
@@ -310,7 +366,7 @@ G_0 +
                  col = AOI),
              alpha = .5,
              inherit.aes  = F,
-             data = UV22_3)
+             data = D_2)
 ```
 
 ### Measuring visits
@@ -325,21 +381,16 @@ A *visit* is a closed sequence of eye positions in the same region. The followin
 
 travel_threshold <- 50
 
-UV22_4 <-
+D_3 <-
 
-  UV22_3 %>%
-
+  D_2 %>%
   group_by(Part, Stim) %>%
-
   filter(AOI != lag(AOI) | travel > travel_threshold) %>% ## logical OR
-
   mutate(visit = row_number(),
-
          duration = lead(time) - time) %>%
-
   ungroup()
 
-sample_n(UV22_4, 10)
+sample_n(D_3, 10)
 
 ```
 
@@ -355,7 +406,7 @@ G_3 <-
              color = "white",
              alpha = .2,
              inherit.aes  = F,
-             data = UV22_4)
+             data = D_3)
 
 G_3
 
@@ -368,7 +419,7 @@ G_4 <-
   geom_path(aes(x = x, y = y,
                 col = Part),
             inherit.aes  = F,
-            data = UV22_4) # <--
+            data = D_3) # <--
 
 G_4
 
@@ -381,8 +432,8 @@ G_4
 
 ```{r}
 
-UV22_6 <-
-  UV22_4 %>%
+D_4 <-
+  D_3 %>%
   group_by(Part, Face, AOI, Sclera, Skull) %>%  # <--
   summarize(n_visits = n(),
             total_dur = sum(duration, na.rm = TRUE)) %>%
@@ -390,7 +441,7 @@ UV22_6 <-
   mutate(congruent = (Sclera == Skull))
 
 
-UV22_6
+D_4
 
 ```
 
@@ -398,7 +449,7 @@ UV22_6
 
 G_6 <-
 
-  UV22_6 %>%
+  D_4 %>%
   ggplot(aes(x = congruent, y = n_visits, fill = AOI)) +
   facet_wrap(~Part) +
   geom_col()
@@ -411,7 +462,7 @@ G_6
 ```{r}
 
 G_7 <-
-  UV22_6 %>%
+  D_4 %>%
   ggplot(aes(x = AOI, y = total_dur, fill = congruent)) +
   facet_wrap(~Part) +
   geom_col()
