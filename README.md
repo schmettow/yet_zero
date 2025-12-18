@@ -15,10 +15,17 @@ a pre-defined experiment. [Read more on the Uncanny Valley experiment](https://g
 
 **Built-in Data Science**
 
+<<<<<<< HEAD
 Yet Zero uses CSV tables to specify the experimental design, which can be 
 edited using any table calculation program that exports to CSV, or any text editor.
 Included is a full data analysis pipeline in tidy R, using the Quarto system.
 Beginners can quickly produce research reports and learn the basics of eye tracking data analysis with Yet.
+=======
+Yet Zero uses CSV tables to specify the experimental design, rather than using a user interface
+This can be done with any table calculation program that exports to CSV.
+Yet Zero comes with a data analysis pipeline in tidy R, using the Quarto system.
+Beginners can quickly learn the basics of eye tracking data science with Yet.
+>>>>>>> 8c447b6fa9334802e44b2a37218aa9ce27372343
 
 
 **Theory of Operation**
