@@ -4,7 +4,8 @@
 
 Your Eye Tracker is a low-budget eye tracking platform based on a cheap endoscope camera, 
 3d printed parts and OpenCV image processing. It currently reaches around 2.5° error on average, with a minimum of 5°.
-This is a fraction of what commercial eye trackers accuracy to $1/1000$ the price.
+This is a little less accuracy as than what commercial eye trackers offer, at $1/1000$ the price. 
+This makes Yet Zero particularly suited for educational purposes and many research applications.
 
 **[Tutorial](https://schmettow.github.io/yet_zero/)**
 
@@ -12,10 +13,10 @@ YET can be assembled from scratch within minutes. Provided one first prints the 
 The tutorial describes the assembly, installation and usage of YET. Yet comes ready to try, with
 a pre-defined experiment. [Read more on the Uncanny Valley experiment](https://github.com/schmettow/Uncanny-Valley/blob/master/Uncanny%20Valley.docx)[Use download button]
 
-**Data Science**
+**Built-in Data Science**
 
-Yet Zero uses CSV tables to specify the experimental design. 
-This can be done with a table calculation program.
+Yet Zero uses CSV tables to specify the experimental design, rather than using a user interface
+This can be done with any table calculation program that exports to CSV.
 Yet Zero comes with a data analysis pipeline in tidy R, using the Quarto system.
 Beginners can quickly learn the basics of eye tracking data science with Yet.
 
